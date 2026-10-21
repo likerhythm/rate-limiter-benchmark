@@ -85,14 +85,14 @@ t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …
 - Redisson은 네트워크 왕복이 있어 판정 지연이 로컬 limiter보다 길다. 버스트 안에서의 순서가 섞일 수 있지만 허용 개수에는 영향이 없다.
 - 버스트는 스레드 64개로 동시에 쏜다. wave 하나가 64건을 넘으면 `ScenarioRunner` 생성 시 풀 크기를 늘려야 한다.
 
-## 실행해봤을 때 나온 결과
+## 실행 결과
 
-![summary](results/charts/summary.png)
+<img src="results/charts/summary.png" width="600"/>
 
-![single_burst](results/charts/timeline_single_burst.png)
+<img src="results/charts/timeline_single_burst.png" width="600"/>
 
-![boundary_burst](results/charts/timeline_boundary_burst.png)
+<img src="results/charts/timeline_boundary_burst.png" width="600"/>
 
-![steady_with_spike](results/charts/timeline_steady_with_spike.png)
+<img src="results/charts/timeline_steady_with_spike.png" width="600"/>
 
-![repeated_bursts](results/charts/timeline_repeated_bursts.png)
+<img src="results/charts/timeline_repeated_bursts.png" width="600"/>
