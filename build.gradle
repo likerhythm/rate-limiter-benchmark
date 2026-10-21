@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'experiment'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.github.resilience4j:resilience4j-ratelimiter:2.3.0'
+    implementation 'dev.failsafe:failsafe:3.3.2'
+    implementation 'org.redisson:redisson:4.8.0'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
+}
+
+application {
+    mainClass = 'experiment.ExperimentMain'
+}
+
+tasks.named('run') {
+    // ./gradlew run --args="--redis redis://127.0.0.1:6379 --out results"
+    workingDir = rootProject.projectDir
+}
