@@ -60,22 +60,6 @@ scripts/plot_results.py              ← 시각화
 
 t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …ms에 생긴다.
 
-## 예시 결과
-
-### 시나리오별 타임라인
-
-| single_burst | boundary_burst |
-|---|---|
-| ![single_burst](results/charts/timeline_single_burst.png) | ![boundary_burst](results/charts/timeline_boundary_burst.png) |
-
-| steady_with_spike | repeated_bursts |
-|---|---|
-| ![steady_with_spike](results/charts/timeline_steady_with_spike.png) | ![repeated_bursts](results/charts/timeline_repeated_bursts.png) |
-
-### 전체 요약
-
-![summary](results/charts/summary.png)
-
 ## 결과 읽는 법
 
 - **timeline_<시나리오>.png**
@@ -100,3 +84,15 @@ t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …
 - 측정 시각은 JVM `System.nanoTime()` 기준이고, Redisson은 Redis Lua 안에서 `System.currentTimeMillis()`(ms 단위)를 쓴다. 요청이 정확히 1000ms 간격으로 겹치면 "1초 구간 최대" 지표가 ±1건 흔들릴 수 있어서, 시나리오 간격을 1000의 약수가 아니게 잡았다.
 - Redisson은 네트워크 왕복이 있어 판정 지연이 로컬 limiter보다 길다. 버스트 안에서의 순서가 섞일 수 있지만 허용 개수에는 영향이 없다.
 - 버스트는 스레드 64개로 동시에 쏜다. wave 하나가 64건을 넘으면 `ScenarioRunner` 생성 시 풀 크기를 늘려야 한다.
+
+## 실행해봤을 때 나온 결과
+
+![summary](results/charts/summary.png)
+
+![single_burst](results/charts/timeline_single_burst.png)
+
+![boundary_burst](results/charts/timeline_boundary_burst.png)
+
+![steady_with_spike](results/charts/timeline_steady_with_spike.png)
+
+![repeated_bursts](results/charts/timeline_repeated_bursts.png)
