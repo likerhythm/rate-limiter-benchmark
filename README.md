@@ -85,6 +85,37 @@ t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …
 - Redisson은 네트워크 왕복이 있어 판정 지연이 로컬 limiter보다 길다. 버스트 안에서의 순서가 섞일 수 있지만 허용 개수에는 영향이 없다.
 - 버스트는 스레드 64개로 동시에 쏜다. wave 하나가 64건을 넘으면 `ScenarioRunner` 생성 시 풀 크기를 늘려야 한다.
 
+## 분석
+
+### 핵심 지표 비교
+
+어떤 구현이 "rate limit을 실제로 지키는가"를 보려면 총 허용 건수보다 **임의의 1초 구간에서 최대 몇 건을 통과시켰는가**를 봐야 한다. 한도는 10건/s.
+
+| 시나리오 | Resilience4j | Failsafe bursty | Failsafe smooth | Redisson |
+|---|---|---|---|---|
+| single_burst — 1초 최대 | 10 | 10 | **1** | 10 |
+| boundary_burst — 1초 최대 | **20** | **20** | 2 | 10 |
+| steady_with_spike — 1초 최대 | **15** | **15** | 9 | 10 |
+| repeated_bursts — 1초 최대 | **20** | **20** | 4 | 10 |
+| repeated_bursts — 총 허용 | 50 | 50 | 17 | 50 |
+
+### 구현별 특성
+
+**Resilience4j / Failsafe bursty (고정 윈도우)**
+윈도우 경계 앞뒤로 요청이 몰리면 1초 안에 한도의 최대 2배가 통과한다(`boundary_burst`에서 20건, `steady_with_spike`에서 15건). 설정한 한도가 실질적으로 지켜지지 않는다.
+
+**Failsafe smooth (leaky bucket / GCRA)**
+어떤 구간에서도 한도를 넘지 않는다. 대신 100ms 슬롯에 1건씩만 허용하는 구조라 버스트가 몰리면 처리량 자체가 크게 줄어든다(`repeated_bursts`에서 50건 중 17건만 허용). 한도는 지키지만 트래픽을 너무 많이 버린다.
+
+**Redisson (슬라이딩 윈도우 로그)**
+어느 1초 구간을 잘라도 허용 건수가 정확히 한도(10건) 이하다. `repeated_bursts`에서 총 허용 건수는 고정 윈도우와 동일하게 50건이지만, 1초 최대가 10건으로 유지된다. 버스트를 한꺼번에 통과시키는 게 아니라 슬라이딩 윈도우 안에서 분산 처리하기 때문이다.
+
+### 결론
+
+처리량(총 허용 건수)과 안정성(1초 최대 건수)을 같이 놓고 보면 Redisson이 가장 균형이 좋다. 고정 윈도우 구현들은 처리량은 같지만 경계에서 한도를 초과하고, Failsafe smooth는 한도는 지키지만 처리량이 너무 낮다. 다만 Redisson은 Redis 의존성이 생기고 네트워크 레이턴시가 판정 지연에 직접 영향을 준다는 트레이드오프가 있다.
+
+---
+
 ## 실행 결과
 
 <img src="results/charts/summary.png" width="600"/>
@@ -96,3 +127,5 @@ t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …
 <img src="results/charts/timeline_steady_with_spike.png" width="600"/>
 
 <img src="results/charts/timeline_repeated_bursts.png" width="600"/>
+
+ 
