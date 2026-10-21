@@ -60,6 +60,22 @@ scripts/plot_results.py              ← 시각화
 
 t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …ms에 생긴다.
 
+## 예시 결과
+
+### 시나리오별 타임라인
+
+| single_burst | boundary_burst |
+|---|---|
+| ![single_burst](results/charts/timeline_single_burst.png) | ![boundary_burst](results/charts/timeline_boundary_burst.png) |
+
+| steady_with_spike | repeated_bursts |
+|---|---|
+| ![steady_with_spike](results/charts/timeline_steady_with_spike.png) | ![repeated_bursts](results/charts/timeline_repeated_bursts.png) |
+
+### 전체 요약
+
+![summary](results/charts/summary.png)
+
 ## 결과 읽는 법
 
 - **timeline_<시나리오>.png**

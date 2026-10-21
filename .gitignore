@@ -6,7 +6,8 @@ build/
 .idea/
 
 # Results (generated output)
-results/
+results/*
+!results/charts/
 
 # Claude Code local settings
 .claude/settings.local.json
