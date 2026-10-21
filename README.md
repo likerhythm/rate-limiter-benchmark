@@ -89,15 +89,15 @@ t=0은 limiter 생성 시점이다. 고정 윈도우 경계는 t=1000, 2000, …
 
 ## 실행 결과
 
-<img src="results/charts/summary.png" width="600"/>
+![summary](results/charts/summary.png)
 
-<img src="results/charts/timeline_single_burst.png" width="600"/>
+![single_burst](results/charts/timeline_single_burst.png)
 
-<img src="results/charts/timeline_boundary_burst.png" width="600"/>
+![boundary_burst](results/charts/timeline_boundary_burst.png)
 
-<img src="results/charts/timeline_steady_with_spike.png" width="600"/>
+![steady_with_spike](results/charts/timeline_steady_with_spike.png)
 
-<img src="results/charts/timeline_repeated_bursts.png" width="600"/>
+![repeated_bursts](results/charts/timeline_repeated_bursts.png)
 
 ---
 
